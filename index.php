@@ -35,14 +35,17 @@
         }
 
         if (empty($_POST['phone'])){
-            $errors['phone'][] = 'Donner un numéro de téléphone';
+            $errors['phone'][] = 'doit être fourni';
         } else {
             if (strlen($_POST['phone']) !== 10){
-                $errors['phone'][] = 'Un numéro de téléphone est composé de 10 chiffres';
+                $errors['phone'][] = 'est composé de 10 chiffres';
                 }
             if (substr($_POST['phone'], 0, 1)){
-                $errors['phone'][] = 'Un numéro de téléphone commence par le chiffre \'0\'';
+                $errors['phone'][] = 'commence par le chiffre \'0\'';
                 }
+            if (!is_numeric($_POST['phone'])){
+                $errors['phone'][] = 'ne contient rien d\'autre que des chiffres';
+            }
             }
 
          if (empty($_POST['subject'])){
@@ -148,18 +151,18 @@
 
                             <?php
 
-                                if (!empty($errors['phone'][0])) : ?>
-                                        <div class="text-danger">
-                                            <strong><span class="glyphicon  glyphicon-warning-sign"></span> <?= $errors['phone'][0]; ?></strong>
-                                        </div>
-                                <?php endif;
+                            if (!empty($errors['phone'])){
+                                foreach ($errors['phone'] AS $key => $error){
+                                    $errorTab[] = $error;
+                                    }
+                            ?>
 
-                                if (!empty($errors['phone'][1])) : ?>
-                                    <div class="text-danger">
-                                        <strong><span class="glyphicon  glyphicon-warning-sign"></span> <?= $errors['phone'][1]; ?></strong>
-                                    </div>
-                                <?php endif;
+                            <div class="text-danger">
+                                <strong><span class="glyphicon  glyphicon-warning-sign"></span> <?= 'Un numéro de téléphone ' . implode(', ', $errorTab) . '.'; ?></strong>
+                            </div>
 
+                            <?php
+                            }
                             ?>
 
                             <input type="tel" class="form-control" id="phone" name="phone" placeholder="0123456789" value="<?php
@@ -169,7 +172,6 @@
                             ?>"/>
                         </div>
                 </div>
-
 
 
                 <div class="form-group">
